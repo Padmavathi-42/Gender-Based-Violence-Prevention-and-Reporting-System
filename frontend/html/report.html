@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Submit a Report</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Submit an Anonymous Report</h1>
+    <form method="POST">
+      <label>Incident Date (YYYY-MM-DD):</label>
+      <input type="date" name="incident_date" required /><br />
+      <label>Location:</label>
+      <input type="text" name="location" required /><br />
+      <label>Incident Type:</label>
+      <select name="incident_type" required>
+        <option value="Physical">Physical</option>
+        <option value="Sexual">Sexual</option>
+        <option value="Emotional">Emotional</option>
+        <option value="Economic">Economic</option></select
+      ><br />
+      <label>Description:</label>
+      <textarea name="description" required></textarea><br />
+      <label>Are you a Victim or Witness?</label>
+      <select name="witness" required>
+        <option value="Victim">Victim</option>
+        <option value="Witness">Witness</option></select
+      ><br />
+      <input type="submit" value="Submit Report" class="button" />
+    </form>
+    <a href="{{ url_for('index') }}" class="button">Back to Home</a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+  </body>
+</html>
