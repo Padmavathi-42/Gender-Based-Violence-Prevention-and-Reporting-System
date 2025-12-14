@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GBV Reporting System</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body id="index-container">
+    <div class="content-wrapper">
+      <h1 class="title">Anonymous Gender-Based Violence Reporting</h1>
+      <p class="subtitle">
+        This system ensures your anonymity and encrypts all submitted data.
+      </p>
+      <div class="button-group">
+        <a href="{{ url_for('report') }}" class="button">Submit a Report</a>
+        <a href="{{ url_for('admin') }}" class="button">Admin Login</a>
+      </div>
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <p class="success">{{ message }}</p>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+  </body>
+</html>
