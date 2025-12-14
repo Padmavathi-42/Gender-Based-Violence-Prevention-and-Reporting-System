@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Predictive Analytics</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Predictive Analytics for GBV Prevention</h1>
+
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <p class="error">{{ message }}</p>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <p><strong>Model Accuracy:</strong> {{ "%.2f"|format(accuracy) }}</p>
+
+    <h2>High-Risk Areas</h2>
+    {% if high_risk_areas.risk_probability %}
+    <table>
+      <thead>
+        <tr>
+          <th>Location</th>
+          <th>Risk Probability</th>
+          <th>Incident Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for location, risk in high_risk_areas.risk_probability.items() %}
+        <tr>
+          <td>{{ location }}</td>
+          <td>{{ "%.2f"|format(risk) }}</td>
+          <td>{{ high_risk_areas.incident_count[location] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No high-risk areas identified.</p>
+    {% endif %}
+
+    <h2>Preventive Measures</h2>
+    {% for location, data in preventive_measures.items() %}
+    <h3>{{ location }}</h3>
+    <p><strong>Most Common Incident Type:</strong> {{ data.common_type }}</p>
+    <p>
+      <strong>Average Distress Percentage:</strong> {{ data.avg_distress }}%
+    </p>
+    <ul>
+      {% for measure in data.measures %}
+      <li>{{ measure }}</li>
+      {% endfor %}
+    </ul>
+    {% endfor %}
+
+    <div class="button-group">
+      <a href="{{ url_for('admin') }}" class="button">Back to Admin</a>
+      <a href="{{ url_for('logout') }}" class="button">Logout</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+  </body>
+</html>
