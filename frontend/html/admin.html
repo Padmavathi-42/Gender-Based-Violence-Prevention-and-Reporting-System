@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Panel</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* Pop-up styling */
+      #urgent-popup {
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ffebee;
+        color: #c62828;
+        padding: 20px;
+        border: 2px solid #c62828;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body id="admin-container">
+    <h1>Admin Panel</h1>
+
+    {% if 'logged_in' not in session or not session['logged_in'] %}
+    <form method="POST">
+      <label>Admin Password:</label>
+      <input type="password" name="password" required /><br />
+      <input type="submit" value="Login" class="button" />
+    </form>
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <p class="error">{{ message }}</p>
+    {% endfor %} {% endif %} {% endwith %} {% else %}
+    <h2>All Reports</h2>
+    <form
+      method="POST"
+      action="{{ url_for('clear_db') }}"
+      style="display: inline"
+    >
+      <input
+        type="submit"
+        value="Clear Database"
+        class="button"
+        onclick="return confirm('Are you sure?');"
+      />
+    </form>
+    <a href="{{ url_for('predictive_analytics') }}" class="button"
+      >View Predictive Analytics</a
+    >
+
+    {% if reports %}
+    <table id="report-table">
+      <thead>
+        <tr>
+          <th>Report ID</th>
+          <th>Incident Date</th>
+          <th>Location</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Witness</th>
+          <th>Submission Date</th>
+          <th>Status</th>
+          <th>Distress %</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+        <tr
+          class="{% if report.distress_percentage > 60 %}urgent{% endif %}"
+          data-report-id="{{ report.report_id }}"
+        >
+          <td>{{ report.report_id }}</td>
+          <td>{{ report.incident_date }}</td>
+          <td>{{ report.location }}</td>
+          <td>{{ report.incident_type }}</td>
+          <td>
+            <ul>
+              {% for sentence in report.description %}
+              <li>{{ sentence }}</li>
+              {% endfor %}
+            </ul>
+          </td>
+          <td>{{ report.witness }}</td>
+          <td>{{ report.submission_date }}</td>
+          <td>{{ report.status }}</td>
+          <td>{{ report.distress_percentage }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No reports available.</p>
+    {% endif %}
+    <div class="button-group">
+      <a href="{{ url_for('logout') }}" class="button">Logout</a>
+      <a href="{{ url_for('index') }}" class="button">Back to Home</a>
+    </div>
+    <!-- Pop-up for urgent reports -->
+    <div id="urgent-popup">
+      <p id="urgent-message">New Urgent Report Detected!</p>
+      <button
+        onclick="document.getElementById('urgent-popup').style.display='none'"
+      >
+        Close
+      </button>
+    </div>
+    {% endif %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+  </body>
+</html>
